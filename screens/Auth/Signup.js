@@ -6,13 +6,24 @@ import AuthInput from "../../components/AuthInput";
 import useInput from "../../hooks/useInput";
 import { Alert } from "react-native";
 import { useMutation } from "react-apollo-hooks";
-import { LOG_IN, CREATE_ACCOUNT } from "./AuthQueries";
+import { CREATE_ACCOUNT } from "./AuthQueries";
+//import { Facebook } from "expo";
+import * as Facebook from "expo-facebook";
 
 const View = styled.View`
   justify-content: center;
   align-items: center;
   flex: 1;
 `;
+
+const FBContainer = styled.View`
+  margin-top: 25px;
+  padding-top: 25px;
+  border-top-width: 1px;
+  border-top-color: ${props => props.theme.lightGreyColor};
+  border-style: solid;
+`;
+
 
 export default ({navigation}) => {
   const fNameInput = useInput("");
@@ -31,8 +42,6 @@ export default ({navigation}) => {
     }
   });
 
-
-
   const handleSignup = async() => {
     
     const {value:fName} = fNameInput;
@@ -46,7 +55,7 @@ export default ({navigation}) => {
       return Alert.alert("That email is invalid")
     }
 
-    if(fName === ""){
+    if(fName === "" || lName === ""){
       return Alert.alert("I need your name");
     }
 
@@ -72,7 +81,43 @@ export default ({navigation}) => {
     }
   };
 
+  const fbLogin = async() => {
+    try {
+      setLoading(true);
+      const {
+        type,
+        token,
+        expires,
+        permissions,
+        declinedPermissions,
+      } = await Facebook.logInWithReadPermissionsAsync("2299591176967048", {
+        permissions: ["public_profile", "email"],
+      });
+      if (type === "success") {
+        // Get the user's name using Facebook's Graph API
+        const response = await fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,last_name,first_name,email`);
+        const {email, first_name, last_name} = await response.json();
+        emailInput.setValue(email);
+        fNameInput.setValue(first_name);
+        lNameInput.setValue(last_name);
+
+        const [username] = email.split("@");
+        userNameInput.setValue(username);
+        
+        setLoading(false);
+        //Alert.alert("Logged in!", `Hi ${(await response.json()).name}!`);
+      } else {
+        // type === 'cancel'
+      }
+    } catch ({ message }) {
+      alert(`Facebook Login Error: ${message}`);
+    }
+
+  }  
+
+
   return (
+    <>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View>
       <AuthInput 
@@ -100,6 +145,12 @@ export default ({navigation}) => {
           autoCorrect={false}
         />                        
         <AuthButton loading={loading} onPress={handleSignup} text="Sign up" />
+
+        <FBContainer>
+          <AuthButton bgColor={"#2D4DA7"} loading={false} onPress={fbLogin} text="Connect Facebook" />
+        </FBContainer>        
       </View>
     </TouchableWithoutFeedback>
+
+    </>
 )};
