@@ -25,7 +25,7 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   const preLoad = async() => {
-    await AsyncStorage.clear();
+    //await AsyncStorage.clear();
 
     try{
       await Font.loadAsync({
@@ -50,6 +50,10 @@ export default function App() {
       } else {
         setIsLoggedIn(true);
       }
+
+
+      // Developer Code
+      setIsLoggedIn(true);
 
       setLoaded(true);
       setClient(client);

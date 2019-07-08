@@ -1,7 +1,6 @@
 import React, {createContext, useContext, useState} from "react";
 import { AsyncStorage} from "react-native";
 
-
 export const AuthContext = createContext();
 
 export const AuthProvider = ({isLoggedIn: isLoggedInProp, children}) => {
