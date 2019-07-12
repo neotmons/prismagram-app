@@ -41,6 +41,13 @@ export default function App() {
 
       const client = new Apolloclient({
         cache,
+
+        request: async(operation) => {
+          const token = await AsyncStorage.getItem("jwt");
+          return operation.setContext({
+            headers: {Authorization: `Bearer ${token}`}
+          })
+        },
         ...apolloClientOptions
       });
 
@@ -51,9 +58,9 @@ export default function App() {
         setIsLoggedIn(true);
       }
 
-
       // Developer Code
-      setIsLoggedIn(true);
+      // 로그인 상태로 강제 전환
+      // setIsLoggedIn(true);
 
       setLoaded(true);
       setClient(client);
