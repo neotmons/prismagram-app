@@ -9,6 +9,7 @@ import Search from "../screens/Tabs/Search";
 import Profile from "../screens/Tabs/Profile";
 import Notification from "../screens/Tabs/Notifications";
 import MessagesLink from "../components/MessagesLink";
+import Detail from "../screens/Detail";
 import { View } from "react-native";
 import NavIcon from "../components/NavIcon";
 import { stackStyles } from "./config";
@@ -21,7 +22,8 @@ const stackFactory = (initialRoute, customConfig) =>
                 ...customConfig,
                 headerStyle: {...stackStyles}
             }
-        }
+        },
+        Detail
     });
 
 const Container = styled.View`
@@ -65,9 +67,7 @@ export default createBottomTabNavigator(
             }            
         },
         Search: {
-            screen: stackFactory(Search, {
-                title: "Search"
-            }),
+            screen: stackFactory(Search),
             navigationOptions: {
                 tabBarIcon: ({focused}) => (
                     <NavIcon focused={focused} name={Platform.OS === "ios" ? "ios-search" : "md-search"} />)
@@ -117,6 +117,9 @@ export default createBottomTabNavigator(
         }
     },
     {
+
+        // 작업편의를 위해 초기 페이지를 아래와 같이 지정하나 후 작업함.
+        initialRouteName: "Search", 
         tabBarOptions: {
             showLabel: false,
             style: {
