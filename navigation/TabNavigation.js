@@ -1,42 +1,52 @@
 import React from "react";
-import styled from "styled-components";
-import { Image } from "react-native";
 import { Platform } from "react-native";
-import { createBottomTabNavigator, createStackNavigator } from "react-navigation";
-
+import {
+  createBottomTabNavigator,
+  createStackNavigator
+} from "react-navigation";
 import Home from "../screens/Tabs/Home";
 import Search from "../screens/Tabs/Search";
-import Profile from "../screens/Tabs/Profile";
 import Notification from "../screens/Tabs/Notifications";
-import MessagesLink from "../components/MessagesLink";
+import Profile from "../screens/Tabs/Profile";
 import Detail from "../screens/Detail";
+import MessagesLink from "../components/MessagesLink";
 import { View } from "react-native";
 import NavIcon from "../components/NavIcon";
 import { stackStyles } from "./config";
 import styles from "../styles";
+import UserDetail from "../screens/UserDetail";
+import styled from "styled-components";
 
-const stackFactory = (initialRoute, customConfig) => 
-    createStackNavigator({
-        initialRoute: {
-            screen: initialRoute,
-            navigationOptions: {
-                ...customConfig,
-                
-            }
-        },
-        Detail: {
-            screen: Detail,
-            navigationOptions: {
-                headerTintColor: styles.blackColor,
-                title: "Photo"
-            }
+const stackFactory = (initialRoute, customConfig) =>
+  createStackNavigator(
+    {
+      InitialRoute: {
+        screen: initialRoute,
+        navigationOptions: {
+          ...customConfig
         }
+      },
+      Detail: {
+        screen: Detail,
+        navigationOptions: {
+          title: "Photo"
+        }
+      },
+      UserDetail: {
+        screen: UserDetail,
+        navigationOptions: {
+          title: "User"
+        }
+      }
     },
     {
-        defaultNavigationOptions: {
-            headerStyle: {...stackStyles}
-        }
-    });
+      defaultNavigationOptions: {
+        headerBackTitle: null,
+        headerTintColor: styles.blackColor,
+        headerStyle: { ...stackStyles }
+      }
+    }
+  );
 
 const Container = styled.View`
     justify-content: center
@@ -44,6 +54,7 @@ const Container = styled.View`
     flex: 1;
     height: 35;
 `;
+
 
 export default createBottomTabNavigator(
     {
@@ -133,7 +144,7 @@ export default createBottomTabNavigator(
     {
 
         // 작업편의를 위해 초기 페이지를 아래와 같이 지정하나 후 작업함.
-        initialRouteName: "Search", 
+        initialRouteName: "Profile", 
         tabBarOptions: {
             showLabel: false,
             style: {
