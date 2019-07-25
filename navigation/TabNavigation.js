@@ -102,12 +102,10 @@ export default createBottomTabNavigator(
         Add: {
             screen: View,
             navigationOptions: {
-                tabBarOnPress: ({navigation}) => navigation.navigate("PhotoNavigation")
-            },
-            navigationOptions: {
+                tabBarOnPress: ({navigation}) => navigation.navigate("PhotoNavigation"),
                 tabBarIcon: ({focused}) => (
                     <NavIcon focused={focused} name={Platform.OS === "ios" ? "ios-add" : "md-add"} />)
-            }             
+            }
         },
         Notification: {
             screen: stackFactory(Notification, {
