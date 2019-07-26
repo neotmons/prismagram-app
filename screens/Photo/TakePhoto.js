@@ -1,7 +1,8 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import styled from "styled-components";
 
 import {Image, ScrollView, TouchableOpacity} from "react-native";
+import * as MediaLibrary from "expo-media-library";
 import * as Permissions from "expo-permissions";
 import Loader from "../../components/Loader";
 import constants from "../../constants";
@@ -12,15 +13,48 @@ import styles from "../../styles";
 
 const View = styled.View`
     flex: 1;
+    justify-content: center;
+    align-items: center;
 `;
 
-const Text = styled.Text``;
+const Icon = styled.View``;
+
+const Button = styled.View`
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    border: 10px solid ${styles.lightGreyColor};
+`;
+
+
 
 export default ({ navigation }) => {
+    const cameraRef = useRef();
+    const [canTakePhoto, setCanTakePhoto] = useState(true);
     const [loading, setLoading] = useState(true);
     const [hasPermission, setHasPermission] = useState(false);
 
     const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
+
+    const takePhoto = async () => {
+        if(!canTakePhoto){
+            return;
+        }
+
+        try {
+            setCanTakePhoto(false);
+            const {uri} = await cameraRef.current.takePictureAsync({
+                quality: 1,
+            })
+    
+            const asset = await MediaLibrary.createAssetAsync(uri);
+            navigation.navigate("Upload", {photo: asset})
+        } catch(e) {
+            console.log(e);
+            setCanTakePhoto(true);
+        }
+
+    }
 
 
     const askPermission = async() => {
@@ -56,7 +90,9 @@ export default ({ navigation }) => {
                 <Loader /> 
                 ) : (
                     hasPermission ? (
+                        <>
                         <Camera 
+                            ref={cameraRef}
                             type={cameraType} 
                             style={{
                                 justifyContent:"flex-end",
@@ -67,6 +103,12 @@ export default ({ navigation }) => {
                                 <Ionicons name={Platform.OS === "ios" ? "ios-revers-camera": "md-reverse-camera"} size={28} color={styles.whiteColor} />
                             </TouchableOpacity>
                         </Camera>
+                        <View>
+                            <TouchableOpacity onPress={takePhoto} disabled={!canTakePhoto}>
+                                <Button />
+                            </TouchableOpacity>
+                        </View>
+                        </>
                         ) : (
                             null    
                         )
