@@ -142,7 +142,7 @@ export default createBottomTabNavigator(
     {
 
         // 작업편의를 위해 초기 페이지를 아래와 같이 지정하나 후 작업함.
-        initialRouteName: "Profile", 
+        //initialRouteName: "Profile", 
         tabBarOptions: {
             showLabel: false,
             style: {
