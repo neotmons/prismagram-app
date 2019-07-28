@@ -10,6 +10,7 @@ import styles from "../../styles";
 import constants from "../../constants";
 import { useMutation } from "react-apollo-hooks";
 import { FEED_QUERY } from "../Tabs/Home";
+import apolloClientOptions from "../../apollo";
 
 
 const UPLOAD = gql`
@@ -86,9 +87,10 @@ export default ({ navigation }) => {
 
     try {
         setIsLoading(true);
+
       const {
         data: { location }
-      } = await axios.post("http://192.168.0.27:4000/api/upload", formData, {
+      } = await axios.post(apolloClientOptions.uri.toString()+"api/upload", formData, {
         headers: {
           "content-type": "multipart/form-data"
         }
